@@ -1,9 +1,19 @@
 #include <Game.h>
 
-Game::Game() : window(VideoMode(800, 600), "OpenGL") 
+// // Uncomment for Part 2
+// // ********************
+bool flip = false;
+int current = 1;
+// // ********************
 
+
+
+Game::Game() : window(VideoMode(800, 600), "OpenGL"), primatives(8)
 {
-	
+	// // Uncomment for Part 2
+	// // ********************
+	 index = glGenLists(primatives);
+	// // ********************
 }
 
 Game::~Game() {}
@@ -17,7 +27,7 @@ void Game::run()
 
 	while (isRunning) {
 
-		cout << "Game running..." << endl;
+		//cout << "Game running..." << endl;
 
 		while (window.pollEvent(event))
 		{
@@ -36,31 +46,25 @@ void Game::initialize()
 {
 	isRunning = true;
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
-	glMatrixMode(GL_PROJECTION); 
+	// // Uncomment for Part 2
+	// // ********************
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45.0, window.getSize().x / window.getSize().y, 1.0, 500.0);
 	glMatrixMode(GL_MODELVIEW);
-}
 
-void Game::update()
-{
-	//cout << "Update up" << endl;
-}
-
-void Game::draw()
-{
-	//cout << "Draw up" << endl;
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glBegin(GL_TRIANGLES); 
-	{ 
+	glNewList(index, GL_COMPILE);
+	glBegin(GL_TRIANGLES);
+	{
 		glVertex3f(0.0, 2.0, -5.0);
 		glVertex3f(-2.0, -2.0, -5.0);
-		glVertex3f(2.0, -2.0, -5.0); 
+		glVertex3f(2.0, -2.0, -5.0);
 	}
 	glEnd();
+	glEndList();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glNewList(index + 1, GL_COMPILE);
 	glPointSize(10);
 	glBegin(GL_POINTS);
 	{
@@ -68,9 +72,10 @@ void Game::draw()
 		glVertex3f(-2.0, -2.0, -5.0);
 		glVertex3f(2.0, -2.0, -5.0);
 	}
-	
+	glEnd();
+	glEndList();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glNewList(index + 2, GL_COMPILE);
 	glBegin(GL_LINES);
 	{
 		glVertex3f(0.0, 2.0, -5.0);
@@ -78,8 +83,9 @@ void Game::draw()
 		glVertex3f(2.0, -2.0, -5.0);
 	}
 	glEnd();
+	glEndList();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glNewList(index + 3, GL_COMPILE);
 	glBegin(GL_LINE_STRIP);
 	{
 		glVertex3f(0.0, 2.0, -5.0);
@@ -88,9 +94,9 @@ void Game::draw()
 		glVertex3f(1.0, -0.0, -5.0);
 	}
 	glEnd();
+	glEndList();
 
-	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glNewList(index + 4, GL_COMPILE);
 	glBegin(GL_LINE_LOOP);
 	{
 		glVertex3f(0.0, 2.0, -5.0);
@@ -99,8 +105,9 @@ void Game::draw()
 		glVertex3f(1.0, -0.0, -5.0);
 	}
 	glEnd();
+	glEndList();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glNewList(index + 5, GL_COMPILE);
 	glBegin(GL_POLYGON);
 	{
 		glVertex3f(-1.0, 2.0, -5.0);
@@ -111,11 +118,12 @@ void Game::draw()
 		glVertex3f(1.0, 2.0, -5.0);
 	}
 	glEnd();
+	glEndList();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glNewList(index + 6, GL_COMPILE);
 	glBegin(GL_TRIANGLE_STRIP);
 	{
-		
+
 		glVertex3f(-1.0, 2.0, -5.0);
 		glVertex3f(-2.0, 0.0, -5.0);
 		glVertex3f(-1.0, -2.0, -5.0);
@@ -124,8 +132,9 @@ void Game::draw()
 		glVertex3f(1.0, 2.0, -5.0);
 	}
 	glEnd();
+	glEndList();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glNewList(index + 7, GL_COMPILE);
 	glBegin(GL_TRIANGLE_FAN);
 	{
 
@@ -136,8 +145,9 @@ void Game::draw()
 		glVertex3f(1.0, 1.3, -5.0);
 	}
 	glEnd();
+	glEndList();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glNewList(index + 8, GL_COMPILE);
 	glBegin(GL_QUADS);
 	{
 
@@ -150,15 +160,73 @@ void Game::draw()
 		glVertex3f(2.0, 0.0, -5.0);
 		glVertex3f(2.0, -2.0, -5.0);
 		glVertex3f(0.0, -2.0, -5.0);
-		
-		//glVertex3f(1.0, 1.3, -5.0);
 	}
 	glEnd();
+	glEndList();
+
+	// // Uncomment for Part 2
+	// // ********************
+}
+
+void Game::update()
+{
+
+	// // Uncomment for Part 2
+	// // ********************
+	elapsed = clock.getElapsedTime();
+
+	if (elapsed.asSeconds() >= 1.0f)
+	{
+		clock.restart();
+
+		if (!flip)
+		{
+			flip = true;
+			current++;
+			if (current > primatives)
+			{
+				current = 1;
+			}
+		}
+		else
+			flip = false;
+	}
+
+	if (flip)
+	{
+		rotationAngle += 0.005f;
+
+		if (rotationAngle > 360.0f)
+		{
+			rotationAngle -= 360.0f;
+		}
+	}
+	// // ********************
+
+	//cout << "Update up" << endl;
+}
+
+void Game::draw()
+{
+
+	 // Uncomment for Part 2
+	// // ********************
+	//cout << "Draw up" << endl;
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	////Investigate Here!!!!!
+
+	//cout << "Drawing Primative " << current << endl;
+	glCallList(current);
+	// // Uncomment for Part 2
+	// // ********************
 
 	window.display();
+
 }
 
 void Game::unload()
 {
-//	cout << "Cleaning up" << endl;
+	//cout << "Cleaning up" << endl;
 }
